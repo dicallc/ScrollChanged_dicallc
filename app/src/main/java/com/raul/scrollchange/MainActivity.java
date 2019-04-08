@@ -2,8 +2,8 @@ package com.raul.scrollchange;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             recRight.setAdapter(rightAdapter);
+            rightAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    Log.e("dicallc",position+"");
+                }
+            });
         } else {
             rightAdapter.notifyDataSetChanged();
         }
@@ -150,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
     private void initLeft() {
         if (leftAdapter == null) {
             leftAdapter = new ScrollLeftAdapter(R.layout.scroll_left, null);
+            leftAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    leftAdapter.selectItem(position);
+                    rightManager.scrollToPositionWithOffset(tPosition.get(position), 0);
+                }
+            });
             mLeftManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             recLeft.setLayoutManager(mLeftManager);
             recLeft.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
@@ -159,20 +169,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         leftAdapter.setNewData(left);
-
-        leftAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()) {
-                    //点击左侧列表的相应item,右侧列表相应的title置顶显示
-                    //(最后一组内容若不能填充右侧整个可见页面,则显示到右侧列表的最底端)
-                    case R.id.item:
-                        leftAdapter.selectItem(position);
-                        rightManager.scrollToPositionWithOffset(tPosition.get(position), 0);
-                        break;
-                }
-            }
-        });
     }
 
     //获取数据(若请求服务端数据,请求到的列表需有序排列)

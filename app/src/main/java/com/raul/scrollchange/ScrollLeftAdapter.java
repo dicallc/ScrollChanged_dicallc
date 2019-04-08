@@ -25,8 +25,7 @@ public class ScrollLeftAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
 
     @Override
     protected void convert(BaseViewHolder helper, String item) {
-        helper.setText(R.id.left_text, item)
-                .addOnClickListener(R.id.item);
+        helper.setText(R.id.left_text, item);
         //将左侧item中的TextView添加到集合中
         tv.add((TextView) helper.getView(R.id.left_text));
         //设置进入页面之后,左边列表的初始状态
