@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //记录右侧当前可见的第一个item的position
     private int first = 0;
     private GridLayoutManager rightManager;
+    private LinearLayoutManager mLeftManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 //遍历左边列表,列表对应的内容等于右边的title,则设置左侧对应item高亮
                 for (int i = 0; i < left.size(); i++) {
                     if (left.get(i).equals(rightTitle.getText().toString())) {
-                        leftAdapter.selectItem(i);
+                        leftAdapter.selectItem(i,mLeftManager.findLastVisibleItemPosition()+1);
+                        Log.e("scroll",i+"");
+                        recLeft.smoothScrollToPosition(i);
                     }
                 }
 
@@ -137,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 //则设置左侧列表最后一条item高亮
                 if (rightManager.findLastCompletelyVisibleItemPosition() == right.size() - 1) {
                     leftAdapter.selectItem(left.size() - 1);
+                    recLeft.smoothScrollToPosition(left.size() - 1);
                 }
             }
         });
@@ -145,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
     private void initLeft() {
         if (leftAdapter == null) {
             leftAdapter = new ScrollLeftAdapter(R.layout.scroll_left, null);
-            recLeft.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            mLeftManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            recLeft.setLayoutManager(mLeftManager);
             recLeft.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
             recLeft.setAdapter(leftAdapter);
         } else {
